@@ -127,3 +127,9 @@ SELECT * FROM member;
     ```
    
 ### 3-2
+- ORDER BY
+```SQL
+SELECT mem_id, mem_name, debut_date
+  FROM member
+  ORDER BY debut_date;
+```
