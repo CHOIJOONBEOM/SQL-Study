@@ -11,12 +11,12 @@
 - Database modeling: modeling database before making database
 - Project: Entire process of making software (real life case -> computer system)
 - Waterfall model: Representative sw developing process
-  1. Project Planning    &nbsp; 2. Project Analysis  3. System Design  4. Coding  5. Testing  6. Deployment(유지보수)  
- 
-#How to make Database
-Schemas - Create Schema  
-#How to make Table
-Select Database - Right click - Create Table  
-#How to Insert Data
-Select Table - Right click - Select Rows Limits 1000  
-#Selecting Data
+  1. Project Planning &nbsp; 2. Project Analysis &nbsp; 3. System Design &nbsp;  4. Coding &nbsp;  5. Testing &nbsp;  6. Deployment(유지보수)  
+  
+- How to make Database  
+  - Schemas - Create Schema  
+- How to make Table
+  - Select Database - Right click - Create Table  
+- How to Insert Data
+  - Select Table - Right click - Select Rows Limits 1000  
+- Selecting Data
