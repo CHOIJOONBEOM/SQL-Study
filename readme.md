@@ -102,8 +102,28 @@ USE market_db;
 SELECT * FROM member;
 ```
 - Where Conditions
-  - 
-```SQL
-
-SELECT * FROM buy;
-```
+  - Relational, Logical Operators
+    - you can use relational operators(<=) or logical operators(AND, OR)
+  - Between ~ AND: used to get values between two numbers
+    ```SQL
+    SELECT mem_name, height
+      FROM member
+      WHERE height BETWEEN 163 AND 165;
+    ```
+  - IN: use instead of OR
+    ```SQL
+    SELECT mem_name, addr
+      FROM member
+      WHERE addr IN('경기', '전남', '경남');
+    ```
+  - LIKE: search text that contains specific data
+      - '% includes every text that contains specific data'
+    ```SQL
+    SELECT * FROM member WHERE mem_name LIKE '우%';
+    ```
+       - 'searches text with exact number of _. In this case searches text that has two words infront of pink'
+    ```SQL
+    SELECT * FROM member WHERE mem_name LIKE '__pink';
+    ```
+   
+### 3-2
