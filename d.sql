@@ -1,0 +1,1 @@
+SELECT 'Column_name' FROM 'Table' WHERE 'Condition';
