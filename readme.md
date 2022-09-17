@@ -133,3 +133,69 @@ SELECT mem_id, mem_name, debut_date
   FROM member
   ORDER BY debut_date;
 ```
+
+## SQL Grammer - Advanced
+### 4-1 Data Type of MySQL
+- Integer
+  - TINYINT:  1 byte, range -128 ~ 127
+  - SMALLINT: 2 byte, -32,768 ~ 32,767
+  - INT:      4 byte, -21 trillion ~ 21 trillion
+  - BIGINT:   8 byte, -900경 ~ 900경
+
+    - UNSIGNED: Range of the Integer starts from 0  
+    e.g.) if use TINYINT UNSIGNED, data range is from 0 to 255
+    - Error Message: Out of Range
+
+```SQL
+USE market_db;
+CREATE TABLE hongong4(
+  tinyint_col TINYINT,
+  smallint_col SMALLINT,
+  int_col INT,
+  bigint_col BIGINT
+);
+```
+
+- Text
+  - CHAR: 1~255 byte
+  - VARCHAR: 1~16383 byte
+
+  - CHAR has fixed length of character while VARCHAR has variable length of character.
+  - Using VARCHAR is efficient but slower than using CHAR in process.
+    - LONGTEXT: 1 ~ 42 trillioni
+    - BLOB(Binary Long Object)/LONGBLOB: Image, Video data
+
+- Actual Number
+  - FLOAT: 4 byte, 7 decimal point
+  - DOUBLE: 8 byte, 15 decimal point
+
+- Date and Time
+  - DATE: 3 byte, saves only date, YYYY-MM-DD
+  - TIME: 3 byte, saves only time, HH:MM:SS
+  - DATETIME: 8 byte, date and time, YYYY-MM-DD HH:MM:SS
+
+- Variable
+  - SQL can set variable and use it like any other programming languages.
+  - Variables cannot be used when using LIMIT
+  - PREPARE and EXECUTE are used instead of LIMIT
+  ```SQL
+  SET @count = 3:
+  PREPARE mySQL FROM 'SELECT mem_name, height FROM member ORDER BY height LIMIT ?';
+  EXECUTE mySQL USING @count;
+  ```
+
+#### Data Type Conversion
+  - Type Conversion: Str to Int, Int to Str
+    - Explicit Conversion: use function for conversion
+      - CAST(), CONVERT()
+      ```SQL
+       SELECT CAST(AVG(price) AS SIGNED) '평균 가격' FROM buy;
+      -- 또는
+      SELECT CONVERT(AVG(price) , SIGNED) '평균 가격' FROM buy;
+      ```
+    - Implicit Conversion: happens without command
+    ```SQL
+    SELECT 100 + '200';
+    ```
+      - The result shows 300 although 100 was integer and 200 was string.  
+        String was implicitly converted into integer.
