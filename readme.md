@@ -91,12 +91,19 @@ INSERT INTO member VALUES('BLK', '블랙핑크', 4, '경남', '055', '22222222',
 INSERT INTO member VALUES('WMN', '여자친구', 6, '경기', '031', '33333333', 166, '2015.01.15');
 ...
 ```
-- Select Data
-```SQL
-SELECT * FROM member;
-SELECT * FROM buy;
-```
 - Designating Database
+  - You should designate database using 'database_name.table_name'.
+  - But if you use 'USE' you can just type 'table_name'.
+```SQL
+SELECT * FROM market_db.member;
+```
 ```SQL
 USE market_db;
+SELECT * FROM member;
+```
+- Where Conditions
+  - 
+```SQL
+
+SELECT * FROM buy;
 ```
