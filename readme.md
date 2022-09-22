@@ -212,7 +212,6 @@ CREATE TABLE hongong4(
     ```
       - The result shows 300 although 100 was integer and 200 was string.  
         String was implicitly converted into integer.
-<<<<<<< HEAD
 
 
 ### 4-2 Join
@@ -308,7 +307,7 @@ CREATE TABLE hongong4(
       - Self Join
         - Join data in the table itself. So, self join uses one table.
         - A Representative example is the organization chart of a company
-          - image.png
+          - ![alt text](https://github.com/CHOIJOONBEOM/SQL-Study/blob/main/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202022-09-22%20012338.png)
           - Director is a manger of senior manager while he is also an employee. To know Director's contact, user should self join EMP and MANAGER column
           ```SQL
           SELECT A.emp "EMP", B.emp "MANAGER", B.phone "CONATCT"
@@ -319,5 +318,3 @@ CREATE TABLE hongong4(
           ```
           * Used alias of emp_table with emp_table A, emp_table B to use them as seperate tables
 
-=======
->>>>>>> 25add0818374f17ac9f5a61497b576e90d997375
