@@ -133,3 +133,175 @@ SELECT mem_id, mem_name, debut_date
   FROM member
   ORDER BY debut_date;
 ```
+## SQL Grammer - Advanced
+### 4-1 Data Type of MySQL
+- Integer
+  - TINYINT:  1 byte, range -128 ~ 127
+  - SMALLINT: 2 byte, -32,768 ~ 32,767
+  - INT:      4 byte, -21 trillion ~ 21 trillion
+  - BIGINT:   8 byte, -900경 ~ 900경
+
+  * UNSIGNED: Range of the Integer starts from 0
+  e.g.) if use TINYINT UNSIGNED, data range is from 0 to 255
+  * Error Message: Out of Range
+
+```SQL
+USE market_db;
+CREATE TABLE hongong4(
+  tinyint_col TINYINT,
+  smallint_col SMALLINT,
+  int_col INT,
+  bigint_col BIGINT
+);
+```
+
+- Text
+  - CHAR: 1~255 byte
+  - VARCHAR: 1~16383 byte
+
+  - CHAR has fixed length of character while VARCHAR has variable length of character.
+  - Using VARCHAR is efficient but slower than using CHAR in process.
+
+    - LONGTEXT: 1 ~ 42 trillioni
+    - BLOB(Binary Long Object)/LONGBLOB: Image, Video data
+
+- Actual Number
+  - FLOAT: 4 byte, 7 decimal point
+  - DOUBLE: 8 byte, 15 decimal point
+
+- Date and Time
+  - DATE: 3 byte, saves only date, YYYY-MM-DD
+  - TIME: 3 byte, saves only time, HH:MM:SS
+  - DATETIME: 8 byte, date and time, YYYY-MM-DD HH:MM:SS
+
+- Variable
+  - SQL can set variable and use it like any other programming languages.
+  - Variables cannot be used when using LIMIT
+  - PREPARE and EXECUTE are used instead of LIMIT
+  ```SQL
+  SET @count = 3:
+  PREPARE mySQL FROM 'SELECT mem_name, height FROM member ORDER BY height LIMIT ?';
+  EXECUTE mySQL USING @count;
+  ```
+
+#### Data Type Conversion
+  - Type Conversion: Str to Int, Int to Str
+    - Explicit Conversion: use function for conversion
+      - CAST(), CONVERT()
+      ```SQL
+       SELECT CAST(AVG(price) AS SIGNED) '평균 가격' FROM buy;
+      -- 또는
+      SELECT CONVERT(AVG(price) , SIGNED) '평균 가격' FROM buy;
+      ```
+    - Implicit Conversion: happens without command
+    ```SQL
+    SELECT 100 + '200';
+    ```
+      - The result shows 300 although 100 was integer and 200 was string.  
+        String was implicitly converted into integer.
+
+
+### 4-2 Join
+- Join: combining tables into one to extract data
+  - Inner Join: In general, Join refers to an Inner Join and it is most frequently used
+      - One to Many Relationship
+        - Tables of database have several relationships, and One to Many Relationship is necessary for join
+        - One table can have only one value(Primary Key), while the other table can have multiple values(Foreign Key)   
+
+      - Example of joining 'buy' table and 'member' table to get members' address, contact and deliver the goods.
+      ```SQL
+      USE market_db;
+      SELECT *
+        FROM buy
+        INNER JOIN member
+        ON buy.mem_id = member.mem_id
+      WHERE buy.mem_id = 'GRL';
+      ```
+        * If there are same column names for the joining tables, they should be typed as "Table_Name.Column_Name"
+        * If WHERE code is omitted, every row of buy table will joing will member table
+        * Only data from the tables used for join can be printed
+
+      - Simple Expression of Inner Join
+        - To show from which table the column came from, users should write table name infront of column name
+        - Table name can be simplified using alias(별칭)
+        ```SQL
+        SELECT buy.mem_id, member.mem_name, buy.prod_name, member.addr, CONCAT(member.phone1, member.phone2) '연락처'
+          FROM buy
+            INNER JOIN member
+            ON buy.mem_id = member.mem_id;
+        ```
+        ```SQL
+        SELECT B.mem_id, M.mem_name, B.prod_name, M.addr, CONCAT(M.phone1, M.phone2) '연락처'
+          FROM buy B
+            INNER JOIN member M
+            ON B.mem_id = M.mem_id;
+        ```
+
+      - Selecting one Distinct Result
+        ```SQL
+        SELECT DISTINCT M.mem_id, M.mem_name, M.addr
+          FROM buy B
+            INNER JOIN member M
+            ON B.mem_id = M.mem_id
+          ORDER BY M.mem_id;
+        ```
+  - Outer Join: Even if there is data in only one table, the results can be printed
+      - Format
+        - Printing purchase record of every member(includes member who didn't buy anything)
+      ```SQL
+      SELECT M.mem_id, M.mem_name, B.prod_name, M.addr
+        FROM member M
+          LEFT OUTER JOIN buy B
+          ON M.mem_id = B.mem_id
+        ORDER BY M.mem_id;
+      ```
+        * LEFT OUTER JOIN: All contents of the left table(member) should be printed out. Can be written as 'LEFT JOIN'
+        * RIGHT OUTER JOIN: All contents of the right table(buy) should be printed out. Can be written as 'RIGHT JOIN'
+        * FULL OUTER JOIN: Any contents of the left and right table(member, buy)
+
+      - Printing data that is null
+        - Use WHERE 'Column_Name' IS NULL
+        - Printing member who has never bought items
+      ```SQL
+        SELECT DISTINCT M.mem_id, B.prod_name, M.mem_name, M.addr
+          FROM member M
+            LEFT OUTER JOIN buy B
+            ON M.mem_id = B.mem_id
+          WHERE B.prod_name IS NULL
+          ORDER BY M.mem_id;
+      ```      
+  - Other Join
+      - Cross Join
+        - Join all rows in one table and all rows in the other table
+        - The number of result is multiplication of number or rows from two tables
+        - Cannot use ON
+        - Since it is randomly joined, the result is meaningless
+        - Purpose of cross join is to generate large amounts of data
+        ```SQL
+        SELECT *
+          FROM buy
+            CROSS JOIN member;
+        ```
+        - CREATE TABLE ~ SELECT can be used with CROSS JOIN to make large amounts of data
+        ```SQL
+        CREATE TABLE cross_table
+          SELECT *
+            FROM sakila.actor
+              CROSS JOIN world.country;
+        SELECT * FROM cross_table LIMIT 5;
+        ``` 
+      
+      - Self Join
+        - Join data in the table itself. So, self join uses one table.
+        - A Representative example is the organization chart of a company
+          - image.png
+          - Director is a manger of senior manager while he is also an employee. To know Director's contact, user should self join EMP and MANAGER column
+          ```SQL
+          SELECT A.emp "EMP", B.emp "MANAGER", B.phone "CONATCT"
+            FROM emp_table A
+              INNER JOIN emp_table B
+              ON A.manager = B.emp
+            WHERE A.emp = 'Senior Manager';
+          ```
+          * Used alias of emp_table with emp_table A, emp_table B to use them as seperate tables
+
