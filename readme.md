@@ -133,10 +133,7 @@ SELECT mem_id, mem_name, debut_date
   FROM member
   ORDER BY debut_date;
 ```
-<<<<<<< HEAD
-=======
 
->>>>>>> 25add0818374f17ac9f5a61497b576e90d997375
 ## SQL Grammer - Advanced
 ### 4-1 Data Type of MySQL
 - Integer
@@ -144,16 +141,10 @@ SELECT mem_id, mem_name, debut_date
   - SMALLINT: 2 byte, -32,768 ~ 32,767
   - INT:      4 byte, -21 trillion ~ 21 trillion
   - BIGINT:   8 byte, -900경 ~ 900경
-
-<<<<<<< HEAD
   * UNSIGNED: Range of the Integer starts from 0
   e.g.) if use TINYINT UNSIGNED, data range is from 0 to 255
   * Error Message: Out of Range
-=======
-    - UNSIGNED: Range of the Integer starts from 0  
-    e.g.) if use TINYINT UNSIGNED, data range is from 0 to 255
-    - Error Message: Out of Range
->>>>>>> 25add0818374f17ac9f5a61497b576e90d997375
+
 
 ```SQL
 USE market_db;
@@ -171,10 +162,6 @@ CREATE TABLE hongong4(
 
   - CHAR has fixed length of character while VARCHAR has variable length of character.
   - Using VARCHAR is efficient but slower than using CHAR in process.
-<<<<<<< HEAD
-
-=======
->>>>>>> 25add0818374f17ac9f5a61497b576e90d997375
     - LONGTEXT: 1 ~ 42 trillioni
     - BLOB(Binary Long Object)/LONGBLOB: Image, Video data
 
@@ -317,4 +304,5 @@ CREATE TABLE hongong4(
             WHERE A.emp = 'Senior Manager';
           ```
           * Used alias of emp_table with emp_table A, emp_table B to use them as seperate tables
-
+<br><br>
+  ### 4-3 SQL Programming
