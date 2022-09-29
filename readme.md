@@ -306,3 +306,135 @@ CREATE TABLE hongong4(
           * Used alias of emp_table with emp_table A, emp_table B to use them as seperate tables
 <br><br>
   ### 4-3 SQL Programming
+    - SQL Programming should be done inside 'Stored Procedure'
+    - Stored Procedure Format
+      ```SQL
+      DELIMITER $$
+      CREATE PROCEDURE 'Stored_Procedure_Name'
+      BEGIN 'Code'
+      END $$
+      DELIMITER;
+      CALL 'Stored_Procedure_Name'
+      ```
+
+    ### IF STATEMENT
+    - Format
+      ```SQL
+      IF 'Condition' THEN 'output'
+      END IF;
+      ```
+
+    - If there are more than two outputs, use 'BEGIN~END'
+      ```SQL
+      DROP PROCEDURE IF EXISTS ifProc1;
+      DELIMITER $$
+      CREATE PROCEDURE ifProc1()
+      BEGIN
+        IF 100 = 100 THEN
+          SELECT '100 is same as 100';
+        END IF;
+      DELIMITER;
+      CALL ifProc1();
+      ```
+
+    ### IF ~ ELSE STATEMENT
+    -
+      ```SQL
+      DROP PROCEDURE IF EXISTS ifProc2;
+      DELIMITER $$
+      CREATE PROCEDURE ifProc2()
+      BEGIN
+        DECLARE myNum INT;
+        SET myNum = 200;
+        IF myNum = 100 THEN
+          SELECT 'The number is 100';
+        ELSE
+          SELECT 'The number is not 100';
+        END IF;
+      END $$
+      DELIMITER;
+      CALL ifProc2();
+      ```
+
+    ### CASE STATEMENT
+    - Format
+      ```SQL
+      CASE
+        WHEN 'Condition1' THEN
+          'Output1'
+        WHEN 'Condition2' THEN
+          'Output2'
+        WHEN 'Condition3' THEN
+          'Output3'
+        ELSE
+          'Output4'
+      END CASE;
+      ```
+    - Exam score and grade example
+      ```SQL
+      DROP PROCEDURE IF EXISTS caseProc;
+      DELIMITER $$
+      CREATE PROCEDURE caseProc()
+      BEGIN
+        DECLARE point INT;
+        DECLARE credit CHAR(1);
+        SET point = 88;
+
+        CASE
+          WHEN point >=90 THEN
+            SET credit = 'A';
+          WHEN point >=80 THEN
+            SET credit = 'B';
+          WHEN point >=70 THEN
+            SET credit = 'C';
+          WHEN point >=60 THEN
+            SET credit = 'D';
+          ELSE
+            SET credit = 'F';
+        END CASE
+        SELECT CONCAT('취득점수==>', point), CONCAT('학점==>', credit);
+      END $$
+      DELIMITER;
+      CALL caseProc();
+      ```
+    ### WHILE LOOP
+    - Format
+      ```SQL
+      WHILE 'Condition' DO 'SQL sentences'
+      END WHILE;
+      ```
+
+    - Adding every number from 1 to 100 using WHILE
+      ```SQL
+      DROP PROCEDURE IF EXISTS whileProc;
+      DELIMITER $$
+      CREATE PROCEDURE whileProc()
+      BEGIN
+        DECLARE i INT;
+        DECLARE hap INT;
+        SET i = 1;
+        SET hap = 0;
+
+        WHILE (i <= 100) DO
+          SET hap = hap + i;
+          SET i = i + 1;
+        END WHILE;
+
+        SELECT 'Sum from 1 to 100:', hap;
+      END $$
+      DELIMITER;
+      CALL whileProc();
+      ```
+    - ITERATE [label]: starts coding at the designated label
+    - LEAVE [label]: ends While loop
+    <br><br>
+    ### DYNAMIC SQL
+    - PREPARE: doesn't execute but prepare SQL sentence
+    - EXECUTE: executes prepared SQL sentence
+    - DEALLOCATE PREFARE: deallocate prepare after execution
+      ```SQL
+      use market_db:
+      PREPARE myQuery FROM 'SELECT * FROM member WHERE mem_id = "BLK"';
+      EXECUTE myQuery;
+      DEALLOCAE PREPARE myQuery;
+      ```
