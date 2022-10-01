@@ -8,7 +8,7 @@
   - Hierarchical - Network - Relational - Object Oriented - Object Relational
 
 ## Chapter 2 - SQL Basics
-### 2-1
+### 2-1 Database Modeling
 - Database modeling: modeling before making database
 - Project: Entire process of making software (real life case -> computer system)
 - Waterfall model: Representative sw developing process
@@ -75,7 +75,7 @@ CREATE TABLE member -- 회원 테이블
 - Creating 'buy' table
 ```SQL
 CREATE TABLE buy -- 구매 테이블
-(  num 		INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- 순번(PK)
+(  num 		INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- 순번(PK) AUTO_INCREMENT는 PRIMARY KEY로 지정해야 함
    mem_id  	CHAR(8) NOT NULL, -- 아이디(FK)
    prod_name 	CHAR(6) NOT NULL, --  제품이름
    group_name 	CHAR(4)  , -- 분류
@@ -94,13 +94,13 @@ INSERT INTO member VALUES('WMN', '여자친구', 6, '경기', '031', '33333333',
 - Designating Database
   - You should designate database using 'database_name.table_name'.
   - But if you use 'USE' you can just type 'table_name'.
-```SQL
-SELECT * FROM market_db.member;
-```
-```SQL
-USE market_db;
-SELECT * FROM member;
-```
+  ```SQL
+  SELECT * FROM market_db.member;
+  ```
+  ```SQL
+  USE market_db;
+  SELECT * FROM member;
+  ```
 - Where Conditions
   - Relational, Logical Operators
     - you can use relational operators(<=) or logical operators(AND, OR)
@@ -126,7 +126,7 @@ SELECT * FROM member;
     SELECT * FROM member WHERE mem_name LIKE '__pink';
     ```
    
-### 3-2
+### 3-2 Select Statement
 - ORDER BY
 ```SQL
 SELECT mem_id, mem_name, debut_date
@@ -438,3 +438,8 @@ CREATE TABLE hongong4(
       EXECUTE myQuery;
       DEALLOCAE PREPARE myQuery;
       ```
+## Chapter 5 - Table and View
+  ### 5-1 Creating Table
+  - Table consists of row(record), column(field)
+    #### Create table in GUI
+    - Refer Chapter 3-1
