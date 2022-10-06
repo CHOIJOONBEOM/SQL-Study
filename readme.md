@@ -54,43 +54,43 @@
 ## Chapter 3 - SQL Basic Grammer
 ### 3-1 SELECT ~ FROM ~ WHERE
 - Creating and Dropping Database
-```SQL
-DROP DATABASE IF EXISTS market_db;
-CREATE DATABASE market_db;
-```
+  ```SQL
+  DROP DATABASE IF EXISTS market_db;
+  CREATE DATABASE market_db;
+  ```
 - Creating 'member' table
 USE market_db;
-```SQL
-CREATE TABLE member -- 회원 테이블
-( mem_id  		CHAR(8) NOT NULL PRIMARY KEY, -- 사용자 아이디(PK)
-  mem_name    	VARCHAR(10) NOT NULL, -- 이름
-  mem_number    INT NOT NULL,  -- 인원수
-  addr	  		CHAR(2) NOT NULL, -- 지역(경기,서울,경남 식으로 2글자만입력)
-  phone1		CHAR(3), -- 연락처의 국번(02, 031, 055 등)
-  phone2		CHAR(8), -- 연락처의 나머지 전화번호(하이픈제외)
-  height    	SMALLINT,  -- 평균 키
-  debut_date	DATE  -- 데뷔 일자
-);
-```
+  ```SQL
+  CREATE TABLE member -- 회원 테이블
+  ( mem_id  		CHAR(8) NOT NULL PRIMARY KEY, -- 사용자 아이디(PK)
+    mem_name    	VARCHAR(10) NOT NULL, -- 이름
+    mem_number    INT NOT NULL,  -- 인원수
+    addr	  		CHAR(2) NOT NULL, -- 지역(경기,서울,경남 식으로 2글자만입력)
+    phone1		CHAR(3), -- 연락처의 국번(02, 031, 055 등)
+    phone2		CHAR(8), -- 연락처의 나머지 전화번호(하이픈제외)
+    height    	SMALLINT,  -- 평균 키
+    debut_date	DATE  -- 데뷔 일자
+  );
+  ```
 - Creating 'buy' table
-```SQL
-CREATE TABLE buy -- 구매 테이블
-(  num 		INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- 순번(PK) AUTO_INCREMENT는 PRIMARY KEY로 지정해야 함
-   mem_id  	CHAR(8) NOT NULL, -- 아이디(FK)
-   prod_name 	CHAR(6) NOT NULL, --  제품이름
-   group_name 	CHAR(4)  , -- 분류
-   price     	INT  NOT NULL, -- 가격
-   amount    	SMALLINT  NOT NULL, -- 수량
-   FOREIGN KEY (mem_id) REFERENCES member(mem_id)
-);
-```
+  ```SQL
+  CREATE TABLE buy -- 구매 테이블
+  (  num 		INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- 순번(PK) AUTO_INCREMENT는 PRIMARY KEY로 지정해야 함
+    mem_id  	CHAR(8) NOT NULL, -- 아이디(FK)
+    prod_name 	CHAR(6) NOT NULL, --  제품이름
+    group_name 	CHAR(4)  , -- 분류
+    price     	INT  NOT NULL, -- 가격
+    amount    	SMALLINT  NOT NULL, -- 수량
+    FOREIGN KEY (mem_id) REFERENCES member(mem_id)
+  );
+  ```
 - Insert Data
-```SQL
-INSERT INTO member VALUES('TWC', '트와이스', 9, '서울', '02', '11111111', 167, '2015.10.19');
-INSERT INTO member VALUES('BLK', '블랙핑크', 4, '경남', '055', '22222222', 163, '2016.08.08');
-INSERT INTO member VALUES('WMN', '여자친구', 6, '경기', '031', '33333333', 166, '2015.01.15');
-...
-```
+  ```SQL
+  INSERT INTO member VALUES('TWC', '트와이스', 9, '서울', '02', '11111111', 167, '2015.10.19');
+  INSERT INTO member VALUES('BLK', '블랙핑크', 4, '경남', '055', '22222222', 163, '2016.08.08');
+  INSERT INTO member VALUES('WMN', '여자친구', 6, '경기', '031', '33333333', 166, '2015.01.15');
+  ...
+  ```
 - Designating Database
   - You should designate database using 'database_name.table_name'.
   - But if you use 'USE' you can just type 'table_name'.
@@ -117,22 +117,22 @@ INSERT INTO member VALUES('WMN', '여자친구', 6, '경기', '031', '33333333',
       WHERE addr IN('경기', '전남', '경남');
     ```
   - LIKE: search text that contains specific data
-      - '% includes every text that contains specific data'
-    ```SQL
-    SELECT * FROM member WHERE mem_name LIKE '우%';
-    ```
-       - 'searches text with exact number of _. In this case searches text that has two words infront of pink'
-    ```SQL
-    SELECT * FROM member WHERE mem_name LIKE '__pink';
-    ```
+    - '% includes every text that contains specific data'
+      ```SQL
+      SELECT * FROM member WHERE mem_name LIKE '우%';
+      ```
+    - 'searches text with exact number of _. In this case searches text that has two words infront of pink'
+      ```SQL
+      SELECT * FROM member WHERE mem_name LIKE '__pink';
+      ```
    
 ### 3-2 Select Statement
 - ORDER BY
-```SQL
-SELECT mem_id, mem_name, debut_date
-  FROM member
-  ORDER BY debut_date;
-```
+  ```SQL
+  SELECT mem_id, mem_name, debut_date
+    FROM member
+    ORDER BY debut_date;
+  ```
 
 ## SQL Grammer - Advanced
 ### 4-1 Data Type of MySQL
@@ -146,15 +146,15 @@ SELECT mem_id, mem_name, debut_date
   * Error Message: Out of Range
 
 
-```SQL
-USE market_db;
-CREATE TABLE hongong4(
-  tinyint_col TINYINT,
-  smallint_col SMALLINT,
-  int_col INT,
-  bigint_col BIGINT
-);
-```
+  ```SQL
+  USE market_db;
+  CREATE TABLE hongong4(
+    tinyint_col TINYINT,
+    smallint_col SMALLINT,
+    int_col INT,
+    bigint_col BIGINT
+  );
+  ```
 
 - Text
   - CHAR: 1~255 byte
@@ -178,11 +178,11 @@ CREATE TABLE hongong4(
   - SQL can set variable and use it like any other programming languages.
   - Variables cannot be used when using LIMIT
   - PREPARE and EXECUTE are used instead of LIMIT
-  ```SQL
-  SET @count = 3:
-  PREPARE mySQL FROM 'SELECT mem_name, height FROM member ORDER BY height LIMIT ?';
-  EXECUTE mySQL USING @count;
-  ```
+    ```SQL
+    SET @count = 3:
+    PREPARE mySQL FROM 'SELECT mem_name, height FROM member ORDER BY height LIMIT ?';
+    EXECUTE mySQL USING @count;
+    ```
 
 #### Data Type Conversion
   - Type Conversion: Str to Int, Int to Str
@@ -194,9 +194,9 @@ CREATE TABLE hongong4(
       SELECT CONVERT(AVG(price) , SIGNED) '평균 가격' FROM buy;
       ```
     - Implicit Conversion: happens without command
-    ```SQL
-    SELECT 100 + '200';
-    ```
+      ```SQL
+      SELECT 100 + '200';
+      ```
       - The result shows 300 although 100 was integer and 200 was string.  
         String was implicitly converted into integer.
 
@@ -209,14 +209,14 @@ CREATE TABLE hongong4(
         - One table can have only one value(Primary Key), while the other table can have multiple values(Foreign Key)   
 
       - Example of joining 'buy' table and 'member' table to get members' address, contact and deliver the goods.
-      ```SQL
-      USE market_db;
-      SELECT *
-        FROM buy
-        INNER JOIN member
-        ON buy.mem_id = member.mem_id
-      WHERE buy.mem_id = 'GRL';
-      ```
+        ```SQL
+        USE market_db;
+        SELECT *
+          FROM buy
+          INNER JOIN member
+          ON buy.mem_id = member.mem_id
+        WHERE buy.mem_id = 'GRL';
+        ```
         * If there are same column names for the joining tables, they should be typed as "Table_Name.Column_Name"
         * If WHERE code is omitted, every row of buy table will joing will member table
         * Only data from the tables used for join can be printed
@@ -246,15 +246,14 @@ CREATE TABLE hongong4(
           ORDER BY M.mem_id;
         ```
   - Outer Join: Even if there is data in only one table, the results can be printed
-      - Format
-        - Printing purchase record of every member(includes member who didn't buy anything)
-      ```SQL
-      SELECT M.mem_id, M.mem_name, B.prod_name, M.addr
-        FROM member M
-          LEFT OUTER JOIN buy B
-          ON M.mem_id = B.mem_id
-        ORDER BY M.mem_id;
-      ```
+      - Format (Printing purchase record of every member - includes member who didn't buy anything)
+        ```SQL
+        SELECT M.mem_id, M.mem_name, B.prod_name, M.addr
+          FROM member M
+            LEFT OUTER JOIN buy B
+            ON M.mem_id = B.mem_id
+          ORDER BY M.mem_id;
+        ```
         * LEFT OUTER JOIN: All contents of the left table(member) should be printed out. Can be written as 'LEFT JOIN'
         * RIGHT OUTER JOIN: All contents of the right table(buy) should be printed out. Can be written as 'RIGHT JOIN'
         * FULL OUTER JOIN: Any contents of the left and right table(member, buy)
@@ -262,34 +261,35 @@ CREATE TABLE hongong4(
       - Printing data that is null
         - Use WHERE 'Column_Name' IS NULL
         - Printing member who has never bought items
-      ```SQL
-        SELECT DISTINCT M.mem_id, B.prod_name, M.mem_name, M.addr
-          FROM member M
-            LEFT OUTER JOIN buy B
-            ON M.mem_id = B.mem_id
-          WHERE B.prod_name IS NULL
-          ORDER BY M.mem_id;
-      ```      
+          ```SQL
+            SELECT DISTINCT M.mem_id, B.prod_name, M.mem_name, M.addr
+              FROM member M
+                LEFT OUTER JOIN buy B
+                ON M.mem_id = B.mem_id
+              WHERE B.prod_name IS NULL
+              ORDER BY M.mem_id;
+          ```      
   - Other Join
       - Cross Join
-        - Join all rows in one table and all rows in the other table
-        - The number of result is multiplication of number or rows from two tables
-        - Cannot use ON
-        - Since it is randomly joined, the result is meaningless
-        - Purpose of cross join is to generate large amounts of data
         ```SQL
         SELECT *
           FROM buy
             CROSS JOIN member;
         ```
+        - Join all rows in one table and all rows in the other table
+        - The number of result is multiplication of number or rows from two tables
+        - Cannot use ON
+        - Since it is randomly joined, the result is meaningless
+        - Purpose of cross join is to generate large amounts of data
+        
         - CREATE TABLE ~ SELECT can be used with CROSS JOIN to make large amounts of data
-        ```SQL
-        CREATE TABLE cross_table
-          SELECT *
-            FROM sakila.actor
-              CROSS JOIN world.country;
-        SELECT * FROM cross_table LIMIT 5;
-        ``` 
+          ```SQL
+          CREATE TABLE cross_table
+            SELECT *
+              FROM sakila.actor
+                CROSS JOIN world.country;
+          SELECT * FROM cross_table LIMIT 5;
+          ``` 
       
       - Self Join
         - Join data in the table itself. So, self join uses one table.
@@ -443,3 +443,202 @@ CREATE TABLE hongong4(
   - Table consists of row(record), column(field)
     #### Create table in GUI
     - Refer Chapter 3-1
+
+  ### 5-2  Table Constraint
+  - Constraint: Applying a number of rules to prevent inappropriate data from entering the table and ensure "data integrity"
+    - e.g.) Primary Key, Foreign Key, Unique, Check(prevent entering out-of-range data), Default, NOT NULLL
+
+  - Data Integrity: Data is flawless and remains accurate, consistent, and valid
+
+  #### Primary Key Constraint
+  - Primary Key: key in a relational database that is unique for each record(Unique identifier).
+  - Cannot enter duplicate or NULL value
+  - Only 1 PK in each table
+  - How to assign PK
+    ```SQL
+    USE naver_db;
+    DROP TABLE IF EXISTS buy, member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL PRIMARY KEY,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL
+    );
+    ```
+    OR
+    ```SQL
+    DROP TABLE IF EXISTS member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL
+    PRIMARY KEY(mem_id)
+    );
+    ```
+    OR use "ALTER TABLE"
+    ```SQL
+    DROP TABLE IF EXISTS member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL
+    );
+    ALTER TABLE member
+      ADD CONSTRAINT
+      PRIMARY KEY(mem_id);
+    ```
+
+  - You can add PK name by entering its name after PRIMARY KEY code
+    - e.g.) CONSTRAINT PRIMARY KEY "PK_member_mem_id" (mem_id)
+  - When deleting table: Drop FK table first. If you drop PK table first, you won't get any data from FK table.
+
+  #### Foreign Key Constraint
+  - Foreign Key: Connects two table and ensure data integrity
+  - Is conneccted with PK of the other table
+  - 기준 테이블: table that has PK / 참조 테이블: table that has FK
+  - How to assign FK
+    ```SQL
+      USE naver_db;
+    DROP TABLE IF EXISTS buy, member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL PRIMARY KEY,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL
+    );
+    CREATE TABLE buy
+    (num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    mem_id CHAR(8) NOT NULL,
+    prod_name CHAR(6) NOT NULL,
+    FOREIGN KEY(mem_id) REFERENCES member(mem_id)
+    );
+    ```
+    OR use ALTER TABLE
+    ```SQL
+    DROP TABLE IF EXISTS buy;
+    CREATE TABLE buy
+    (num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    mem_id CHAR(8) NOT NULL,
+    prod_name CHAR(6) NOT NULL
+    );
+    ALTER TABLE buy
+      ADD CONSTRAINT
+      FOREIGN KEY(mem_id)
+      REFERENCES member(mem_id);
+    ```
+    - mem_id of 기준 테이블(member) is PK
+    - If 기준 테이블 isn't PK or Unique, FK relationship is unsettled
+
+    #### When 기준 테이블 column changes
+    - Error occurs -> if column changes, data doesn't match
+    - Deleting column also shows error
+    - ON UPDATE CASCADE: Updates both 기준 테이블 and 참조 테이블
+    - ON DELETE CASCADE: Deletes both 기준 테이블 and 참조 테이블
+    ```SQL
+    DROP TABLE IF EXISTS buy;
+    CREATE TABLE buy
+    (num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    mem_id CHAR(8) NOT NULL,
+    prod_name CHAR(6) NOT NULL
+    );
+    ALTER TABLE buy
+      ADD CONSTRAINT
+      FOREIGN KEY(mem_id) REFERENCES member(mem_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE;
+    ```
+    - Enter data into buy table
+      ```SQL
+      INSERT INTO buy VALUES(NULL, 'BLK', 'Wallet');
+      INSERT INTO buy VALUES(NULL, 'BLK', 'Macbook');
+      ```
+    - Change member table BLK into PINK -> No error
+      ```SQL
+      UPDATE member SET mem_id = 'PINK' WHERE mem_id='BLK';
+      ```
+    - Delete member table BLK into PINK -> No error
+      ```SQL
+      DELETE member SET mem_id = 'PINK' WHERE mem_id='BLK';
+      ```
+    
+  ### Other Constraints
+  - Unique Constrant: ensures that all values in a column are different
+    - Similar with PK constraint but allow NULL
+    - Multiple NULL values allowed
+    - Multile Unique Keys allowed
+    ```SQL
+    DROP TABLE IF EXISTS member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL
+    email CHAR(30) NULL UNIQUE
+    ); 
+    ```
+    - Insert data -> Error: email of 3rd row duplicates
+    ```SQL
+    INSERT INTO member VALUES('BLK', '블랙핑크', '163', 'pink@gamil.com');
+    INSERT INTO member VALUES('TWC', '트와이스', '167', NULL);
+    INSERT INTO member VALUES('APN', '에이핑크', '164', 'pink@gamil.com');
+    ```
+  
+  - Check Constraint: check input data about the constraint
+    - Check if the height is greater than or equal to 100
+      ```SQL
+      DROP TABLE IF EXISTS member;
+      CREATE TABLE member
+      (mem_id CHAR(8) NOT NULL,
+      mem_name VARCHAR(10) NOT NULL,
+      height TINYINT UNSINGED NULL CHECK (height >= 100),
+      phone1 CHAR(3) NULL
+      );
+      ```
+    - Error: height of second row violates check constraint
+      ```SQL
+      INSERT INTO member VALUES('BLK', '블랙핑크', '163', NULL);
+      INSERT INTO member VALUES('TWC', '트와이스', '99', NULL);
+      ```
+    - USE ALTER TABLE for Check Constraint(After CREATE TABLE)
+      ```SQL
+      ALTER TABLE member
+        ADD CONSTRAINT
+        CHECK (phone1 IN('02', '031', '032', '054', '055', '061 ));
+      ```
+    - Error -> Second row phone1 violates check constraint
+      ```SQL
+      INSERT INTO member VALUES('BLK', '블랙핑크', '163', '02';
+      INSERT INTO member VALUES('TWC', '트와이스', '99', '010');
+      ```
+  - Default Value: Set default value if there's no input
+    ```SQL
+    DROP TABLE IF EXISTS member;
+    CREATE TABLE member
+    (mem_id CHAR(8) NOT NULL PRIMARY KEY,
+    mem_name VARCHAR(10) NOT NULL,
+    height TINYINT UNSINGED NULL DEFAULT 160,
+    phone1 CHAR(3) NULL
+    );
+    ```
+    - USE ALTER TABLE
+    ```SQL
+    ALTER TABLE member
+      ALTER COLUMN phone1 SET DEFAULT '02';
+    ```
+    - To manually enter default value in column
+    ```SQL
+    INSERT INTO member VALUES('RED', '레드벨벳', '161', '054');
+    INSERT INTO member VALUES('SPC', '우주소녀', default, default);
+    SELECT * FROM member;
+    ```
+    - Then go to the column and enter default value
+  
+  - NULL Value
+    - To allow Null value, omit or use NULL
+    - Not to allow, use NOT NULL
+    - PRIMARY KEY column is automatically recognized as NOT NULL
+
+
+
+
+  
+
+
+  
