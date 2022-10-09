@@ -635,6 +635,137 @@ USE market_db;
     - Not to allow, use NOT NULL
     - PRIMARY KEY column is automatically recognized as NOT NULL
 
+  ### 5-3 View
+  - View: bring a table through select statement
+    - Format
+      ```SQL
+      CREATE VIEW 'View_Name'
+      AS
+        SELECT ~;
+      ```
+    - To bring View
+      ```SQL
+      SELECT col_name FROM view_name
+        WHERE ~;
+      ```
+    - Features of View
+      - Can change table data using view (with some conditions)
+      - Supoorts security: create view without including essential information, unauthorized users can only approach view
+      - Simplify SQL: don't need to repeat complicated queries
+        ```SQL
+        SELECT B.mem_id, M.mem_name, B.prod_name, M.addr, CONCAT(M.phone1, M.phone2) '연락처'
+        FROM buy B
+          INNER JOIN member M
+          ON B.mem_id = M.mem_id;
+        ```
+        TO
+        ```SQL
+        CREATE VIEW v_memberbuy
+        AS
+          SELECT B.mem_id, M.mem_name, B.prod_name, M.addr, CONCAT(M.phone1, M.phone2) '연락처'
+          FROM buy B
+            INNER JOIN member M
+            ON B.mem_id = M.mem_id;
+        ```
+
+    #### Operating View
+    - Create View
+      - Alias: New name for view column, space allowed, write AS to clarify code, when selecting view use `
+        ```SQL
+        USE market_db;
+        CREATE VIEW v_viewtest1
+        AS
+          SELECT B.mem_id 'Member ID', M.mem_name AS 'Member Name', B.prod_name "Product Name", CONCAT(M.phone1, M.phone2) AS "Office Phone"
+          FROM buy B
+            INNER JOIN member M
+            ON B.mem_id = M.mem_id;
+
+        SELECT DISTINCT `Member ID`, `Member Name` FROM v_viewtest1;
+        ```
+    - Modify View
+      - 'ALTER VIEW' statement
+        ```SQL
+        ALTER VIEW v_viewtest1
+        AS
+          SELECT B.mem_id 'Member ID', M.mem_name AS 'Member Name', B.prod_name "Product Name", CONCAT(M.phone1, M.phone2) AS "Office Phone"
+            FROM buy B
+              INNER JOIN member M
+              ON B.mem_id = M.mem_id;
+
+        SELECT DISTINCT `Member ID`, `Member Name` FROM v_viewtest1;
+        ```
+    - Delete View
+      - DROP VIEW
+        ```SQL
+        DROP VIEW v_viewtest1;
+        ```
+    - Check View Info
+      - DESCRIBE or DESC, PK is not shown in View
+        ```SQL
+        DESCRIBE v_viewtest2;
+        ```
+      - SHOW CREATE VIEW
+        ```SQL
+        SHOW CREATE VIEW v_viewtest2;
+        ```
+
+    - View Data Update / Delete
+      - UPDATE
+        ```SQL
+        UPDATE v_member SET addr = 'Busan' WHERE mem_id='BLK';
+        ```
+
+      - INSERT INTO (Table column with NOT NULL must be included in View)
+        ```SQL
+        INSERT INTO v_member(mem_id, mem_name, addr) VALUES('BTS', '방탄소년단', '경기');
+        ```
+        - Create View with Condition
+          ```SQL
+          CREATE VIEW v_height167
+          AS
+            SELECT * FROM member WHERE heigth >= 167;
+
+          SELECT * FROM v_height167;
+          ```
+        - WITH CHECK OPTION: doesn't allow value out of range
+          - Error: only allows value equal or greater than 167
+            ```SQL
+            ALTER VIEW v_height167
+            AS
+                SELECT * FROM member WHERE heigth >= 167
+                  WITH CHECK OPTION;
+
+            INSERT INTO v_height167 VALUES('TOB', '텔레토비', 4, '영국', NULL, NULL, 140, '1995-01-01');
+            ```
+
+      - DELETE data from View
+        ```SQL
+        DELETE FROM v_height167 WHERE height < 167;
+        ```
+
+    - Complex View
+      - View made up of more than two tables, used when creating View with joined table
+      - View made with one table is called Simple View
+        ```SQL
+        CREATE VIEW v_complex
+        AS
+          SELECT B.mem_id, M.mem_name, B.prod_name, M.adder
+            FROM buy B
+              INNER JOIN member M
+              ON B.mem_id = M.mem_id;
+        ```
+
+    - Delete Reference Table
+      - Table can be deleted even though View exists
+      - If select View after deleting Table, error occurs
+        ```SQL
+        DROP TABLE IF EXISTS buy, member;
+        ```
+      
+
+
+
+
 
 
 
