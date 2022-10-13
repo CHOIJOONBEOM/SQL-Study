@@ -762,6 +762,74 @@ USE market_db;
         DROP TABLE IF EXISTS buy, member;
         ```
       
+## CH6 - Index
+### 6-1 Index Concept
+- Index: tool to find data quickly
+  - Clustered Index: When assigned Primary Key, automatically created and aligned based on PK column. Only one for each table.
+  - Secondary Index: When assigned Unique Key, can make many secondary index but not automatically aligned
+  -  Index Pros and Cons
+      - Pros
+        - Search speed improves
+        - Increased computer performance with less burden
+      - Cons
+        - Additional space needed for index(10% of table size)
+        - Takes time to make initial index
+        - Frequent changes in data(INSERT, UPDATE, DELETE) would worsen computer performance
+
+  #### Index Types
+   - Clustered Index: Automatically create Clustered Index on 'mem_id' column
+      ```SQL
+      CREATE TABLE member
+      (mem_id CHAR(8) NOT NULL PRIMARY KEY,
+      mem_name VARCHAR(10) NOT NULL,
+      mem_number INT NOT NULL,
+      ...)
+      ```
+    - To check
+      - Key_name will show 'PRIMARY' which means it's automatically created index
+      - Column_name 'col1' means there's index on col1
+      - Non_Unique: 0 means FALSE(Unique), 1 means TRUE(Non_Unique)
+        ```SQL
+        SHOW INDEX FROM table1;
+        ```
+    - Change PK and new Clustered Index
+      - It can take much time to change PK and it shouldn't be duplicated
+        ```SQL
+        ALTER TABLE member DROP PRIMARY KEY;
+        ALTER TABLE member
+          ADD CONSTRAINT
+          PRIMARY KEY(mem_name);
+        SELECT * FROM member;
+        ```
+  
+  - Secondary Index
+    - Unique key also automatically creates secondary index
+    - column name is shown on Key_name('col2','col3')
+    - Can make many secondary index
+      ```SQL
+      CREATE TABLE table2
+      (col1 INT PRIMARY KEY,
+      col2 INT UNIQUE,
+      col3 INT UNIQUE
+      );
+      SHOW INDEX FROM table2;
+      ```
+
+    - Adding Secondary Index
+      ```SQL
+      ALTER TABLE member
+        ADD CONSTRAINT
+        UNIQUE(mem_id);
+      SELECT * FROM member;
+      ```
+
+    - Add new data
+      - Added on the very last of the table
+        ```SQL
+        INSERT INTO member VALUES('GRL', '소녀시대', 8, '서울');
+        SELECT * FROM member;
+        ```
+
 
 
 
