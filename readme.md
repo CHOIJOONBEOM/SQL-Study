@@ -830,9 +830,79 @@ USE market_db;
         SELECT * FROM member;
         ```
 
+### 6-2 Index Inner Process
+- Index is composed of 'Balanced Tree(B-tree)'
 
+#### Balanced Tree
+- Balanced Tree: data structure used with Clustered and Nonclustered indexes to make data retrieval faster and easier
+  - 3 Nodes(Space where data is stored): Root, Internal, Leaf
+  - In MySQL, node is called 'page'
+  - Page: the smallest store unit, 16Kbyte
+    - Even if the user enter 1 data, 1 page is needed
+  - Every node starts from root node and ends at leaf node
+  
+  #### B-tree page division
+  - Page division: dividing data with new page
+    - slow down the speed and performance of SQL
+    - When inserting new data and if there's not enough space in page, page division will occur which will make extra pages which takes time
 
+#### Index Structure
+#### Clustered Index
+```SQL
+USE market_db;
+CREATE TABLE cluster
+(mem_id CHAR(8), mem_name VARCHAR(10));
+INSERT INTO cluster VALUES('TWC', '트와이스');
+INSERT INTO cluster VALUES('BLK', '블랙핑크');
+INSERT INTO cluster VALUES('WMN', '여자친구');
+INSERT INTO cluster VALUES('OMY', '오마이걸');
+INSERT INTO cluster VALUES('GRL', '소녀시대');
+INSERT INTO cluster VALUES('ITZ', '잇지');
+INSERT INTO cluster VALUES('RED', '레드벨벳');
+INSERT INTO cluster VALUES('APN', '에이핑크');
+INSERT INTO cluster VALUES('SPC', '우주소녀');
+INSERT INTO cluster VALUES('MMU', '마마무');
+```
+```SQL
+ALTER TABLE cluster
+  ADD CONSTRAINT
+  PRIMARY KEY (mem_id);
+```
+- Suppose 1 page can contain 4 data
+- B-tree of the index
+  - ![Clustered B-tree](https://github.com/CHOIJOONBEOM/SQL-Study/blob/main/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202022-10-16%20010017.png)
 
+#### Secondary Index
+```SQL
+USE market_db;
+CREATE TABLE second
+(mem_id CHAR(8), mem_name VARCHAR(10));
+INSERT INTO cluster VALUES('TWC', '트와이스');
+INSERT INTO cluster VALUES('BLK', '블랙핑크');
+INSERT INTO cluster VALUES('WMN', '여자친구');
+INSERT INTO cluster VALUES('OMY', '오마이걸');
+INSERT INTO cluster VALUES('GRL', '소녀시대');
+INSERT INTO cluster VALUES('ITZ', '잇지');
+INSERT INTO cluster VALUES('RED', '레드벨벳');
+INSERT INTO cluster VALUES('APN', '에이핑크');
+INSERT INTO cluster VALUES('SPC', '우주소녀');
+INSERT INTO cluster VALUES('MMU', '마마무');
+```
+```SQL
+ALTER TABLE second
+  ADD CONSTRAINT
+  UNIQUE (mem_id);
+SELECT * FROM second;
+```
+- Suppose 1 page can contain 4 data
+- B-tree of the index
+  - ![Secondary B-tree](https://github.com/CHOIJOONBEOM/SQL-Study/blob/main/Secondary%20Index.png)
+  
+#### Select data from Index
+1. Read Root page and check which leaf page to find
+2. Read leaf page
+3. Find data from leaf page
+- Clustered index is faster than Secondary Index in selecting data
 
 
 
