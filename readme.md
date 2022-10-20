@@ -904,10 +904,123 @@ SELECT * FROM second;
 3. Find data from leaf page
 - Clustered index is faster than Secondary Index in selecting data
 
+### 6-3 Real Use of Index
+- Create Index(Secondary Index)
+  ```SQL
+  CREATE [UNIQUE] INDEX index_name
+    ON table_name (column_name) [ASC | DESC]
+  ```
 
+- Drop Index
+  ```SQL
+  DROP INDEX index_Name ON table_name
+  ```
+  - Cannot drop PK or Unique key Index
+  - Should use ALTER TABLE statement to delete PK or Unique key, then drop Index
+  - Better to delete Secondary Index first: if delete clustered index first, it will reorganize data
+  - Should drop index that is not used
 
+- Create Index Example
+    ```SQL
+    USE market_db;
+    SELECT * FROM member;
+    ```
+  - Check which index is in member table (clustered index in mem_id)
+    ```SQL
+    SHOW INDEX FROM member;
+    ```
+  - Check Index size
+    - Data_length: size of clustered index
+    - Index_length: size of secondary index
+    ```SQL
+    SHOW TABLE STATUS LIKE 'member';
+    ```
 
-  
+  - Create Secondary Index
+    ```SQL
+    CREATE INDEX idx_member_Addr
+      ON member(addr);
+    ```
+  - Apply Created Index
+    ```SQL
+    ANALYZE TABLE member;
+    SHOW TABLE STATUS LIKE 'member';
+    ```
 
+- Using Index
+  - Check Index
+    ```SQL
+    ANALYZE TABLE member;
+    SHOW INDEX FROM member;
+    ```
+  - Select Indexed column and Check Execution Plan
+    ```SQL
+    SELECT mem_id, mem_name, addr
+      FROM member
+      WHERE mem_name = '에이핑크';
+    ```
+    - Execution Plan will show 'Single Row(constant)' -> Index is used
+
+  - Selecting data using number
+    ```SQL
+    SELECT mem_name, mem_number
+      FROM member
+      WHERE mem_number >= 7;
+    ```
+
+  - Cases not using Index
+    - SQL will determine whether to use index based on the workload (mem_number>=1 should bring most of the columns)
+      ```SQL
+      SELECT mem_name, mem_number
+        FROM member
+        WHERE mem_number >= 1;
+      ```
+    - When there's calculation in WHERE
+      ```SQL
+      SELECT mem_name, mem_number
+        FROM member
+        WHERE mem_number*2 >= 14;
+      ```
+      - This code will use index since operator not used in WHERE
+      ```SQL
+      SELECT mem_name, mem_number
+        FROM member
+        WHERE mem_number >= 14/2;
+        ```
+
+  - Drop Index
+    - Check Index name
+      ```SQL
+      SHOW INDEX FROM member;
+      ```
+
+    - Drop Secondary Index
+      ```SQL
+      DROP INDEX idx_member_mem_name ON member;
+      DROP INDEX idx_member_addr ON member;
+      DROP INDEX idx_member_mem_number ON member;
+      ```
+
+    - Drop Clustered Index
+      ```SQL
+      ALTER TABLE member
+        DROP PRIMARY KEY;
+      ```
+
+    - If error occurs, that's because of PK-FK relationship
+    - Find FK name
+      ```SQL
+      SELECT table_name, constraint_name
+        FROM information_schema.referential_constraints
+        WHERE constraint_schema = 'market_db';
+      ```
+
+    - Delete FK and PK
+      ```SQL
+      ALTER TABLE buy
+        DROP FOREIGN KEY buy_ibfk_1;
+      ALTER TABLE member
+        DROP PRIMARY KEY;
+      ```
 
   
