@@ -1023,4 +1023,96 @@ SELECT * FROM second;
         DROP PRIMARY KEY;
       ```
 
-  
+## CH7 - Stored Procedure
+### 7-1 How to Use Stored Procedure
+- Stored Procedure: Programming function provided by MySQL
+  - Combination of Queries
+  - Batch processing of actions
+
+- Create Stored Procedure
+  - Instead of $$, can use $, ##, %%, &&, // etc.
+  ```SQL
+  DELIMITER $$
+  CREATE PROCEDURE stored_procedure_name(IN or OUT parameter)
+  BEGIN
+
+  WRITE CODE HERE
+
+  END $$
+  DELIMITER;
+  ```
+
+- Call Stored Procedure
+  ```SQL
+  CALL stored_procedure_name();
+  ```
+
+- Delete Stored Procedure
+  ```SQL
+  DROP PROCEDURE user_proc;
+  ```
+
+- IN or OUT parameter
+  - IN parameter
+    ```SQL
+    CREATE PROCEDURE procedure_name(IN in_parameter_name Data_Type);
+    CALL procedure_name(value);
+    ```
+    - Example: send '에이핑크' to userName parameter and selects data whose userName('에이핑크') is mem_name
+    ```SQL
+    DELIMITER $$
+    CREATE PROCEDURE user_proc1(IN userName VARCHAR(10))
+    BEGIN
+      SELECT * FROM member WHERE mem_name = userName;
+    END $$
+    DELIMITER;
+
+    CALL user_proc1('에이핑크');
+    ```
+
+  - OUT parameter
+    ```SQL
+    CREATE PROCEDURE procedure_name(OUT out_parameter_name Data_Type);
+    CALL procedure_name(@variable_name);
+    SELECT @variable_name;
+    ```
+    - Example
+     ```SQL
+    DELIMITER $$
+    CREATE PROCEDURE user_proc3(IN txtValue CHAR(10), OUT outValue INT)
+    BEGIN
+      INSERT INTO noTable VALUES(NULL,txtValue);
+      SELECT MAX(id) INTO outValue FROM noTable;
+    END $$
+    DELIMITER;
+    ```
+    - There's no table called noTable, so create one
+      - Although table doesn't exist, it is able to create stored procedure but impossible to call
+    ```SQL
+    CREATE TABLE IF NOT EXISTS noTable(
+      id INT AUTO_INCREMETN PRIMARY KEY,
+      txt CHAR(10)
+    );
+    ```
+    - Call Stored Procedure
+    ```SQL
+    CALL user_proc3('테스트1', @myValue);
+    SELECT CONCAT('입력된 ID 값 ==>', @myValue);
+    ```
+
+
+  - Dynamic SQL using Procedure
+  ```SQL
+  DROP PROCEDURE IF EXISTS dynamic_proc;
+  DELIMITER $$
+    CREATE PROCEDURE dynamic_proc(IN tableName VARCHAR(20))
+    BEGIN
+      SET @sqlQuery = CONCAT('SELECT * FROM ', tableName);
+      PREPARE myQuery FROM @sqlQuery;
+      EXECUTE myQuery;
+      DEALLOCATE PREPARE myQuery;
+    END $$
+    DELIMITER;
+
+    CALL dynamic_proc('member');
+  ```
