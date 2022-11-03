@@ -1116,3 +1116,167 @@ SELECT * FROM second;
 
     CALL dynamic_proc('member');
   ```
+
+### 7-2 Stored Function and Cursor
+### Stored Function
+  - Definition: Defined(Created) function that returns a single value
+  - 'RETURNS' statement assigns data type of returning value
+  - All parameters in Stored Function are Input parameters (No IN)
+  - Use Select to bring function (Stored Procedure: CALL)
+  - Cannot use SELECT inside Stored Function Code (Stored Procedure: can use SELECT)
+  ```SQL
+  DELIMITER $$
+  CREATE FUNCTION stored_function_name(parameter)
+    RETURNS reteive format
+  BEGIN
+    coding
+    RETURN retreive value;
+  END $$
+  DELIMITER;
+  SELECT stored_function_name();
+  ```
+
+  #### Using Stored Function
+  - First, should quthorize stored function
+    ```SQL
+    SET GLOBAL log_bin_trust_function_creators = 1;
+    ```
+  - Stored function of adding to numbers
+    ```SQL
+    USE market_db;
+    DROP FUNCTION IF EXISTS sumFunc;
+    DELIMITER $$
+    CREATE FUNCTION sumFunc(number1 INT, number2 INT)
+      RETURNS INT
+    BEGIN
+      RETURN number1 + number2;
+    END $$
+    DELIMITER;
+
+    SELECT sumFunc(100, 200) AS 'SUM'; --> 300
+    ```
+
+  - Stored function of calculating years since debut
+    ```SQL
+    DROP FUNCTION IF EXISTS calcYearFunc;
+    DELIMITER $$
+    CREATE FUNCTION calcYearFunc(dYear INT)
+      RETURNS INT
+    BEGIN
+      DECLARE runYear INT;
+      SET runYear = YEAR(CURDATE()) - dYear;
+      RETURN runYear;
+    END $$
+    DELIMITER;
+
+    SELECT calcYearFunc(2010) AS 'Years of activity'; --> 12(current year 2022)
+    ```
+    - Store data using SELECT INTO to get result
+      ```SQL
+      SELECT calcYearFunc(2007) INTO @debut2007;
+      SELECT calcYearFunc(2013) INTO @debut2013;
+      SELECT @debut2007-@debut2013 AS 'Year between 2007 and 2013';
+      ```
+
+  - Deleting Function
+    ```SQL
+    DROP FUNCTION calcYearFunc;
+    ```
+  
+  ### Cursor
+  - Definition: A way to manage each row in table (first row to the end row)
+  - Mostly used with Stored Procedure
+  - Steps for using Cursor
+    1. Declare Cursor
+    2. Declare Repetitive Condition
+    3. Open Cursor
+    4. Bring data and process
+    5. End Cursor
+  
+  #### Steps
+1. Set variables
+    ```SQL
+    DECLARE memNumber INT;
+    DECLARE cnt INT DEFAULT 0; -- counted row num
+    DECLARE totNumber INT DEFAULT 0; -- number of total member
+    DECLARE endOfRow BOOLEAN DEFAULT FALSE; -- variable to know the end of row
+    ```
+
+2. Declare Cursor
+    ```SQL
+    DECLARE memberCursor CURSOR FOR
+      SELECT mem_number FROM member;
+    ```
+
+3. Declare Repetitive Condition
+    ```SQL
+    DECLARE CONTINUE HANDLER
+      FOR NOT FOUND SET endOfRow = TRUE;
+    ```
+    - FOR NOT FOUND sets 'endOfRow = TRUE' if there's no row to implement
+  
+4. Open Cursor
+    ```SQL
+    OPEN memberCursor;
+    ```
+
+5. Bring data and process(Loop rows)
+    ```SQL
+    cursor_loop: LOOP
+      FETCH memberCursor INTO memNumber;
+ 
+      IF endOfRow THEN
+        LEAVE cursor_loop;
+      END IF;
+
+      SET cnt = cnt + 1;
+      SET totNumber = totNumber + memNumber;
+    END LOOP cursor_loop;
+    ```
+
+6. Close Cursor
+    ```SQL
+    CLOSE memberCursor;
+    ```
+
+  #### Code with Cursor
+  ```SQL
+  USE market_db;
+  DROP PROCEDURE IF EXISTS cursor_proc;
+  DELIMITER $$
+  CREATE PROCEDURE cursor_proc()
+  BEGIN
+    DECLARE memNumber INT;
+    DECLARE cnt INT DEFAULT 0;
+    DECLARE totNumber INT DEFAULT 0;
+    DECLARE endOfRow BOOLEAN DEFAULT FALSE;
+    
+    DECLARE memberCursor CURSOR FOR
+      SELECT mem_number FROM member;
+    
+    DECLARE CONTINUE HANDLER
+      FOR NOT FOUND SET endOfRow = TRUE;
+
+    OPEN memberCursor;
+
+    cursor_loop: LOOP
+      FETCH memberCursor INTO memNumber;
+ 
+      IF endOfRow THEN
+        LEAVE cursor_loop;
+      END IF;
+
+      SET cnt = cnt + 1;
+      SET totNumber = totNumber + memNumber;
+    END LOOP cursor_loop;
+
+    SELECT (totNumber/cnt) AS 'Average number of members';
+
+    CLOSE member Cursor;
+  END $$
+  DELIMITER;
+```
+
+```SQL
+CALL cursor_proc(); -- result: 6.6
+```
