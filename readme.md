@@ -1275,8 +1275,122 @@ SELECT * FROM second;
     CLOSE member Cursor;
   END $$
   DELIMITER;
-```
+  ```
 
-```SQL
-CALL cursor_proc(); -- result: 6.6
-```
+  ```SQL
+  CALL cursor_proc(); -- result: 6.6
+  ```
+
+## 7-3 Trigger
+- Trigger: Code that automatically runs when there's DML statement(INSERT, UPDATE, DELETE)
+  - DML(Data Manipulation Language)
+- Prevent users from making mistakes (prevent error in data = Maintain data integrity)
+  - e.g.) If a member leaves group, we can use trigger to auto save data to look up later
+- Mostly AFTER trigger is used (BEFORE trigger is less used)
+- Can use CALL statement, IN/OUT parameter to use Trigger
+- Can attach numerous triggers on one table
+
+### Example 1
+- Create Table
+  ```SQL
+  USE market_db;
+  CREATE TABLE IF NOT EXISTS trigger_table (id INT, txt VARCHAR(10));
+  INSERT INTO trigger_table VALUES(1, 'Red Velvet');
+  INSERT INTO trigger_table VALUES(2, 'ITZY');
+  INSERT INTO trigger_table VALUES(1, 'Black Pink');
+  ```
+- Attach Trigger to table
+  ```SQL
+  DROP TRIGGER IF EXISTS myTrigger;
+  DELIMITER $$
+  CREATE TRIGGER myTrigger
+    AFTER DELETE
+    ON trigger_table
+    FOR EACH ROW
+  BEGIN
+    SET @msg = 'Singer Group is deleted'; -- Code when trigger runs
+  END $$
+  DELIMITER;
+  ```
+- Using INSERT or UPDATE -> Trigger doesn't run(@msg returns nothing)
+  ```SQL
+  set @msg = '';
+  INSERT INTO trigger_table VALUES(4, 'MAMAMU');
+  SELECT @msg;
+  UPDATE trigger_table SET txt = '블핑' WHERE id = 3;
+  SELECT @msg;
+  ```
+
+- Using DELETE -> Trigger runs(@msg returns 'Singer Group is deleted')
+  ```SQL
+  DELETE FROM trigger_table WHERE id=4;
+  SELECT @msg;
+  ```
+
+### Example 2
+- Trigger that records data when table(member) information is changed
+- Create table
+  ```SQL
+  USE market_db;
+  CREATE TABLE singer(SELECT mem_id, mem_name, mem_number, addr FROM member);
+  ```
+- Create backup table to save data
+  ```SQL
+  CREATE TABLE backup_singer
+  (mem_id CHAR (8) NOT NULL,
+   mem_name VARCHAR(10) NOT NULL,
+   mem_number INT NOT NULL,
+   addr CHAR(@) NOT NULL,
+   modType CHAR(@), -- Type of change: 'Insert' or 'Delete'
+   modDate DATE, -- Changed Date
+   modUser VARCHAR(30) -- User who changed the information
+  );
+  ```
+
+- Attach Trigger to singer table - UPDATE
+  ```SQL
+  DROP TRIGGER IF EXISTS singer_updateTrg;
+  DELIMITER $$
+  CREATE TRIGGER singer_updateTrg
+    AFTER UPDATE
+    ON singer
+    FOR EACH ROW
+  BEGIN
+    INSERT INTO backup_singer VALUES(OLD.mem_id, OLD.mem_name, OLD.mem_number, OLD.addr, 'Update', CURDATE(), CURRENT_USER());
+  END $$
+  DELIMITER;
+  ```
+  - OLD table is a temporary table supported by MySQL where data is stored before UPDATE or DELETE
+  - When UPDATE runs at OLD table, pre-updated data is inserted into backup table(backup_singer)
+
+- Attach Trigger to singer table - DELETE
+  ```SQL
+  DROP TRIGGER IF EXISTS singer_deleteTrg;
+  DELIMITER $$
+  CREATE TRIGGER singer_deleteTrg
+    AFTER DELETE
+    ON singer
+    FOR EACH ROW
+  BEGIN
+    INSERT INTO backup_singer VALUES(OLD.mem_id, OLD.mem_name, OLD.mem_number, OLD.addr, 'Delete', CURDATE(), CURRENT_USER());
+  END $$
+  DELIMITER;
+  ```
+
+- Change data
+  ```SQL
+  UPDATE singer SET addr = 'England' WHERE mem_id = 'BLK';
+  DELETE FROM singer WHERE mem_number >= 7;
+  ```
+
+- Check the result
+  ```SQL
+  SELECT * FROM backup_singer;
+  ```
+  - If we use 'TRUNCATE TABLE table_name' to delete, Trigger doesn't run since it's not a DELETE statement
+
+### Temporary table run by MySQL
+- NEW / OLD table: created when using INSERT, UPDATE, DELETE
+- INSERT(NEW): before new value is inserted into the table, it is temporarily stored in NEW table
+- DELETE(OLD): value that is going to be deleted is temporarily stored in OLD table
+- UPDATE(NEW, OLD): new value is temporarily stored in NEW table and old value is temporarily stored in OLD table
