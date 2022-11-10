@@ -1281,7 +1281,7 @@ SELECT * FROM second;
   CALL cursor_proc(); -- result: 6.6
   ```
 
-## 7-3 Trigger
+### 7-3 Trigger
 - Trigger: Code that automatically runs when there's DML statement(INSERT, UPDATE, DELETE)
   - DML(Data Manipulation Language)
 - Prevent users from making mistakes (prevent error in data = Maintain data integrity)
@@ -1394,3 +1394,14 @@ SELECT * FROM second;
 - INSERT(NEW): before new value is inserted into the table, it is temporarily stored in NEW table
 - DELETE(OLD): value that is going to be deleted is temporarily stored in OLD table
 - UPDATE(NEW, OLD): new value is temporarily stored in NEW table and old value is temporarily stored in OLD table
+
+## Chapter 8 - Connecting SQL and Python
+### 8-1 Preparing Python Environment
+- PyMySQL: External library that is needed to connect MySQL and Python
+- Benefits of using Python
+  - Strong functions for free
+  - Easy to install and build environment
+  - Various and strong External Libraries(function supplied by the external developers)
+- Modes of Python
+  - Interpreter Mode: Read source code one by one and execute right away
+  - Script Mode: Write several rows of code and execute
