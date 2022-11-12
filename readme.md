@@ -1405,3 +1405,132 @@ SELECT * FROM second;
 - Modes of Python
   - Interpreter Mode: Read source code one by one and execute right away
   - Script Mode: Write several rows of code and execute
+
+### 8-2 Linking Python and MySQL
+- After installing PyMySQL, user can create 'Database Link Program'
+- By using program, users can use database with simple code without learning SQL
+
+#### Practice
+#### Create DB
+```SQL
+DROP DATABASE IF EXISTS soloDB;
+CREATE DATABASE soloDB;
+```
+#### Insert data using Python
+- Steps
+  1. Connect MySQL
+  2. Create Cursor
+  3. Create table
+  4. Insert data
+  5. Store inserted data
+  6. Close MySQL
+
+- Exercise
+1. Connect MySQL
+    ```SQL
+    import pymysql
+    conn = pymysql.connect(host='127.0.0.1', user='root', password='0000', db='soloDB', charset='utf8') --utf8 is charset for Korean words
+    ```
+
+2. Create Cursor
+    ```SQL
+    cur = conn.cursor()
+    ```
+
+3. Create table
+    ```SQL
+    cur.execute("CREATE TABLE userTable(id char(4), userName char(15), email char(20), birthYear int)") -- cur.execute() is executed on the database connected to SQL statement
+    ```
+
+4. Insert data
+    ```SQL
+    cur.execute("INSERT INTO userTable VALUES('hong', '홍지윤', 'hong@naver.com', 1996)")
+    cur.execute("INSERT INTO userTable VALUES('kim', '김태연', 'kim@daum.net', 2011)")
+    cur.execute("INSERT INTO userTable VALUES('star', '별사랑', 'star@paran.com', 1990)")
+    cur.execute("INSERT INTO userTable VALUES('yang', '양지은', 'yang@gmail.com', 1993)")
+    ```
+
+5. Store inserted data
+    ```SQL
+    conn.commit() -- conn.commit() stores inserted data
+    ```
+
+6. Close MySQL
+    ```SQL
+    conn.close()
+    ```
+
+#### Using Link Programming
+- Creating loop code for user to enter data
+  ```SQL
+  import pymysql
+
+  -- Declare variables
+  conn, cur = None, None
+  data1, data2, data3, data4 = "", "", "", ""
+  sql=""
+
+  -- Main Code
+  conn = pymysql.connect(host='127.0.0.1', user='root', password='0000', db='soloDB', charset='utf8')
+  cur = conn.cursor()
+
+  while(True):
+    data1 = input("USER ID ==> ")
+    if data1 == "": -- if press enter the loop ends
+      break;
+    data2 = input("USER NAME ==> ")
+    data3 = input("USER EMAIL ==> ")
+    data4 = input("USER BIRTH YEAR ==> ")
+    sql = "INSERT INTO userTable VALUES('" + data1 + "', '" + data2 + "', '" + data3 + "', " + data4 + ")" -- data4 is integer so don't bind with ''
+    cur.execute(sql)
+
+  onn.commit()
+  conn.close()
+  ```
+
+- Result
+  ```SQL
+  USER ID ==> su
+  USER NAME ==> 수지
+  USER EMAIL ==> suji@hanbit.com
+  USER BIRTH YEAR ==> 1994
+  ...Repeat
+  USER ID ==> -- if press enter, loop ends
+  ```
+
+#### Selecting MySQL data using Python
+1. Connect MySQL
+2. Create Cursor
+3. Select data
+4. Print data
+5. Clost MySQL
+
+  ```SQL
+  import pymysql
+
+  -- Declare variables
+  conn, cur = None, None
+  data1, data2, data3, data4 = "", "", "", ""
+  row=None
+
+  -- Main Code
+  conn = pymysql.connect(host='127.0.0.1', user='root', password='0000', db='soloDB', charset='utf8')
+  cur = conn.cursor()
+
+  cur.execute("SELECT * FROM userTable") -- selected data is stored at cur variable
+
+  print("USER ID   USER NAME    EMAIL   BIRTH YEAR")
+  print("-----------------------------------------")
+
+  while(True):
+    row = cur.fetchone() -- fetchone() function prints each row of selected data
+    if row== None:
+      break
+    data1 = row[0]
+    data2 = row[1]
+    data3 = row[2]
+    data3 = row[3]
+    print("%5s    %15s    %20s    %d" % (data1, data2, data3, data4)) -- data stored with tuple format
+
+  conn.close()
+  ```
