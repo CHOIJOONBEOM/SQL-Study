@@ -1534,3 +1534,114 @@ CREATE DATABASE soloDB;
 
   conn.close()
   ```
+
+### 8-3 GUI applictaion program
+- GUI(Graphical User Interface): Inteface used in Window graphic environment
+  - using python, we can use GUI application program
+  - tkinter: Window library used that supports GUI module
+
+- GUI composition
+  ```SQL
+  from tkinter import *
+
+  root = Tk() -- Tk() retrieves base Window
+  # code written here
+  root.title("GUI PRACTIVE") -- Window title
+  root.gemetry("400x200") -- Window size
+
+  root.mainloop() -- functions used for an event
+  ```
+
+  - Label: widget for text
+    - widget: word that represents button, text, radio button, image, etc.
+    - All widgets should use pack()
+    ```SQL
+    from tkinter import *
+    root = Tk()
+    root.geometry("300x100")
+
+    label1 = Label(root, text="혼공 SQL은")
+    label2 = Label(root, text="쉽습니다.", font = ("궁서체", 30), bg="blue", fg="yellow") -- fg = foreground, bg = background
+
+    label1.pack()
+    label2.pack()
+
+    root.mainloop()
+    ```
+
+  - Button: event starts when button is clicked
+    - command option: user has command on button
+    ```SQL
+    from tkinter import *
+    from tkinter import messagebox
+
+    def clickButton() :
+      messagebox.showinfo('버튼 클릭', '버튼을 눌렀습니다..')
+
+    root = Tk()
+    root.geometry("200x200")
+
+    button1 = Button(root, text="여기를 클릭하세요", fg="red", bg="yellow", command=clickButton) -- msgbox shows when button is clicked
+    button1.pack(expand = 1) -- shows button in the middle of the screen
+
+    root.mainloop()
+    ```
+
+  - Widget Arrangement
+    - pack(side=LEFT): from the left
+    - you can put RIGHT, TOP, BOTTOM instead of LEFT
+    ```SQL
+    from tkinter import *
+
+    root = Tk()
+
+    button1 = Button(root, text="혼공1")
+
+    button1.pack(side=LEFT)
+
+    root.mainloop()
+    ```
+
+    - Space between widget: "padx=pixel value" or "pady=pixel value"
+      ```SQL
+      from tkinter import *
+
+      root = Tk()
+
+      button1 = Button(root, text="혼공1")
+
+      button1.pack(side=TOP, fill =X, padx=10, pady=10)
+
+      root.mainloop()
+      ```
+
+  - Frame, Entry, List box
+    - Frame: diviide screen into a number of sections
+    - Entry: shows input box
+    - Listbox: shows list
+    ```SQL
+    from tkinter import *
+    root = Tk()
+    root.geometry("200x250")
+
+    upFrame = Frame(root)
+    upFrame.pack()
+    downFrame = Frame(root)
+    downFrame.pack()
+    -- 2 frame(upFrame, downFrame) added. Not shown on the screen
+
+    editBox = Entry(upFrame, width = 10) -- entry appear on upFrame
+    editBox.pack(padx = 20, pady = 20)
+
+    listbox = Listbox(downFrame, bg = 'yellow') -- listbox appear on downFrame
+    listbox.pack()
+
+    listbox.insert(END, "하나") -- END means insert data in the end
+    listbox.insert(END, "둘")
+    listbox.insert(END, "셋")
+
+    root.mainloop()
+    ```
+
+
+
